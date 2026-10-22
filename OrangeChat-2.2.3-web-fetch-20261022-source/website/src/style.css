@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --color-orange-50: #FFF7ED;
+  --color-orange-100: #FFEDD5;
+  --color-orange-200: #FED7AA;
+  --color-orange-300: #FDBA74;
+  --color-orange-400: #FB923C;
+  --color-orange-500: #F97316;
+  --color-orange-600: #EA580C;
+  --color-orange-700: #C2410C;
+  --color-orange-800: #9A3412;
+  --color-orange-900: #7C2D12;
+  --color-brand: #FF6B00;
+  --color-brand-light: #FF8C33;
+  --color-brand-dark: #E05E00;
+  --color-surface: #FAFAFA;
+  --color-surface-dark: #0A0A0A;
+  --color-card: #FFFFFF;
+  --color-card-dark: #141414;
+  --font-sans: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Animation utilities */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 107, 0, 0.4);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Intersection observer reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

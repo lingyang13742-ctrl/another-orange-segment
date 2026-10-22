@@ -1,0 +1,72 @@
+{
+  "model": "deepseek-flash",
+  "cases_passed": 4,
+  "search_calls": 0,
+  "api_requests": 8,
+  "usage_total_tokens": 24853,
+  "cases": [
+    {
+      "prompt": "请用中文简要总结这个网页：https://example.com/",
+      "tools_offered": [
+        "write_files",
+        "web_fetch"
+      ],
+      "tools_selected": [
+        "web_fetch"
+      ],
+      "tool_choice": "auto",
+      "fetch_success": true,
+      "title": "Example Domain",
+      "final_url": "https://example.com/",
+      "answer": "**网页总结：Example Domain（example.com）**\n\n- **页面标题**：Example Domain\n- **核心内容**：该域名专门用于文档和示例场景，无需获得许可即可使用。\n- **重要提示**：它**不是**一项真实服务，页面明确建议不要依赖它进行测试或监控。\n\n整体而言，这是一个极简的占位页面，没有任何实际功能或业务内容，仅作为示例域名使用。\n\n来源：https://example.com/"
+    },
+    {
+      "prompt": "请用中文简要总结这个网页：https://github.com/sue1231513/orangechat",
+      "tools_offered": [
+        "write_files",
+        "search_web",
+        "web_fetch"
+      ],
+      "tools_selected": [
+        "web_fetch"
+      ],
+      "tool_choice": "auto",
+      "fetch_success": true,
+      "title": "GitHub - sue1231513/orangechat: 橘瓣！是可爱的橘瓣🍊 · GitHub",
+      "final_url": "https://github.com/sue1231513/orangechat",
+      "answer": "**橘瓣 OrangeChat** 是一个基于 RikkaHub 深度定制的 Android AI 聊天客户端，定位是“不止是聊天，更是生活在一起的 AI 伴侣平台”。目前约 421 星、146 个 fork。[citation,github.com](https://github.com/sue1231513/orangechat)\n\n**核心特色**\n- **插件系统（最大亮点）**：基于 QuickJS 沙箱的 JS 插件框架，插件打包成 zip 导入即可安装，支持声明式 UI、WebView 页面、hooks 事件、配置项等；内置天气、今天吃什么、共读、朋友圈、Supabase 记忆等插件。\n- **生活感知能力**：定位、附近搜索（高德地图）、App 使用轨迹、拍照、通过 Gadgetbridge 同步手环健康数据（步数/心率/睡眠）。\n- **记忆系统**：HNSW 向量语义检索 + 记忆银行 + Supabase 云端同步 + 每日自动总结。\n- **主动消息**：AI 可主动提醒吃饭、睡觉等，而非只被动应答。\n- **工具扩充**：在原版 4 个工具基础上新增 11 个（闹钟、日历、短信、音乐、电池、系统信息、文件打包等）。\n- **个性化**：头像框、气泡透明度、思维链样式、输入框背景、自定义字体。\n\n**技术栈**：Kotlin + Jetpack Compose + Material You，Koin、Room、DataStore、OkHttp、Ktor、QuickJS、Supabase、高德 SDK。构建需 JDK 17+、compileSdk 37、minSdk 26，并放置 `google-services.json`。\n\n**许可证**：派生自 RikkaHub，采用分段双重许可——个人/教育/研究或 ≤10 人组织遵循 AGPL v3；商业用途或超过 10 人需购买商业授权。\n\n简单说：它把 AI 从“对话框”扩展成能感知你生活、记住你、主动找你的伴侣型应用，插件生态是它区别于原版的关键。"
+    },
+    {
+      "prompt": "https://example.com/",
+      "tools_offered": [
+        "write_files",
+        "search_web",
+        "web_fetch"
+      ],
+      "tools_selected": [
+        "web_fetch"
+      ],
+      "tool_choice": "auto",
+      "fetch_success": true,
+      "title": "Example Domain",
+      "final_url": "https://example.com/",
+      "answer": "这是 `example.com` 页面的内容：\n\n**标题：** Example Domain\n\n**正文：**\n> This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\n（大意：这个域名用于文档示例，无需授权即可使用。它不是一个服务，请避免依赖它进行测试和监控。）\n\n这是一个由 IANA 保留的示例域名，页面本身只有这一小段说明文字，没有任何实际功能或内容。需要我帮你做点别的吗？比如用它写个示例页面、测试代码，或者看看别的网站？"
+    },
+    {
+      "prompt": "请用中文简要总结这个网页：https://www.runoob.com/html/html-tutorial.html",
+      "tools_offered": [
+        "write_files",
+        "search_web",
+        "web_fetch"
+      ],
+      "tools_selected": [
+        "web_fetch"
+      ],
+      "tool_choice": "auto",
+      "fetch_success": true,
+      "title": "HTML 教程 | 菜鸟教程",
+      "final_url": "https://www.runoob.com/html/html-tutorial.html",
+      "answer": "这是菜鸟教程（runoob.com）的 **HTML 教程首页**，属于面向初学者的 HTML 入门教程入口页。主要内容如下：\n\n**1. 教程定位**\n- HTML（超文本标记语言）是创建网页的标准标记语言，运行在浏览器中，由浏览器解析。\n- 本教程基于 HTML5 标准，强调“HTML 很容易学”。\n\n**2. 核心内容**\n- 给出一个最基础的 HTML 示例：`<!DOCTYPE html>`、`<html>`、`<head>`、`<meta charset=\"utf-8\">`、`<title>`、`<body>`、`<h1>`、`<p>`。\n- 提醒中文网页必须声明 `charset=\"utf-8\"`，否则会乱码（部分浏览器默认 GBK）。\n- 说明网页文件后缀 `.html` 与 `.htm` 没有区别，均可使用。\n\n**3. 配套资源**\n- 数百个可在线编辑、实时查看效果的 HTML 实例。\n- 完整的 HTML 参考手册（标签、属性、颜色、字符实体等）。\n- HTML/CSS/JS 在线工具，可在线编写并分享代码。\n\n**4. 教程目录结构（侧边栏）**\n- 基础篇：简介、编辑器、元素、属性、标题、段落、文本格式化、链接、头部、CSS、图像、表格、列表、区块、布局、表单、框架、颜色、脚本、字符实体、URL、速查表等。\n- HTML5 篇：新元素、Canvas、SVG、MathML、拖放、地理定位、音视频、Input 类型、表单属性、语义元素、Web 存储、Web SQL、IndexedDB、应用缓存、Web Workers、SSE、WebSocket 等。\n- 参考手册：标签列表（按字母/功能）、属性、事件、画布、音视频、DOCTYPE、颜色名、拾色器、字符集、ASCII、URL 编码、语言代码、HTTP 消息与方法等。\n\n**5. 用户笔记（页面底部）**\n- HTML 中连续空格、回车、制表符都会被解析为一个空白字符。\n- `UTF-8` 与 `utf8` 的区别：MySQL 中只能用 `utf8`，其他地方建议统一写 `UTF-8`。\n- `htm` 与 `html` 的历史渊源（DOS 8.3 短文件名限制），推荐使用 `html`。\n- `<!DOCTYPE html>` 是 HTML5 标准文档类型声明，必须放在文档最前面。\n\n总体而言，这是一个结构清晰、实例丰富、适合零基础自学的 HTML 入门教程导航页。"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+Branch: feat/direct-web-fetch
+
+Web UI: typecheck, oxlint and production build passed.
+Android main application: compiled successfully using local JDK 21 after initializing the material-color-utilities submodule. Original JDK configuration restored.
+Android unit tests: 84 tests, 76 passed, 8 failures in untouched ShareSheet and TimeReminderTransformer tests.
+New WebPageFetcher tests: 10 passed.
+
+me.rerere.rikkahub.ExampleUnitTest: tests=1, failures=0, errors=0
+me.rerere.rikkahub.ui.pages.setting.components.ProviderConfigureConvertToTest: tests=6, failures=0, errors=0
+me.rerere.rikkahub.data.files.SkillPathsTest: tests=3, failures=0, errors=0
+me.rerere.rikkahub.data.ai.transformers.PromptInjectionTransformerTest: tests=36, failures=0, errors=0
+me.rerere.rikkahub.data.datastore.DefaultProvidersTest: tests=1, failures=0, errors=0
+me.rerere.rikkahub.data.ai.transformers.TimeReminderTransformerTest: tests=8, failures=7, errors=0
+me.rerere.rikkahub.utils.VersionTest: tests=11, failures=0, errors=0
+me.rerere.rikkahub.ShareSheetTest: tests=8, failures=1, errors=0
+me.rerere.rikkahub.data.ai.tools.WebPageFetcherTest: tests=10, failures=0, errors=0

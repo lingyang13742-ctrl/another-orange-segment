@@ -1,0 +1,172 @@
+package me.rerere.rikkahub.data.ai.tools
+
+import android.app.NotificationManager
+import android.content.Context
+import android.media.AudioManager
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
+import me.rerere.ai.core.InputSchema
+import me.rerere.ai.core.Tool
+import me.rerere.ai.ui.UIMessagePart
+import me.rerere.common.android.Logging
+
+private val STREAM_MAP = mapOf(
+    "media" to AudioManager.STREAM_MUSIC,
+    "ring" to AudioManager.STREAM_RING,
+    "notification" to AudioManager.STREAM_NOTIFICATION,
+    "alarm" to AudioManager.STREAM_ALARM,
+    "voice_call" to AudioManager.STREAM_VOICE_CALL,
+    "system" to AudioManager.STREAM_SYSTEM
+)
+
+fun createGetVolumeTool(context: Context): Tool = Tool(
+    name = "get_volume",
+    description = "Get the current volume level for a given audio stream (media/ring/notification/alarm/voice_call/system). Returns volume, max, and percentage.",
+    parameters = {
+        InputSchema.Obj(
+            properties = buildJsonObject {
+                putJsonObject("stream") {
+                    put("type", "string")
+                    put("description", "Audio stream name: media, ring, notification, alarm, voice_call, system. Default: media")
+                    putJsonArray("enum") {
+                        add("media"); add("ring"); add("notification"); add("alarm"); add("voice_call"); add("system")
+                    }
+                }
+            }
+        )
+    },
+    execute = { args ->
+        val params = args.jsonObject
+        val streamName = params["stream"]?.jsonPrimitive?.contentOrNull ?: "media"
+        val streamType = STREAM_MAP[streamName]
+        if (streamType == null) {
+            return@Tool listOf(UIMessagePart.Text(
+                buildJsonObject { put("success", false); put("error", "unknown stream: $streamName") }.toString()
+            ))
+        }
+        try {
+            val am = context.getSystemService(AudioManager::class.java)
+            if (am == null) {
+                Logging.log("VolumeTool", "AudioManager unavailable")
+                return@Tool listOf(UIMessagePart.Text(
+                    buildJsonObject { put("success", false); put("error", "AudioManager unavailable") }.toString()
+                ))
+            }
+            val vol = am.getStreamVolume(streamType)
+            val max = am.getStreamMaxVolume(streamType)
+            val percent = if (max > 0) ((vol * 100.0 / max).toInt()) else 0
+            listOf(UIMessagePart.Text(
+                buildJsonObject {
+                    put("success", true)
+                    put("stream", streamName)
+                    put("volume", vol)
+                    put("max", max)
+                    put("percent", percent)
+                    put("message", "$streamName volume: $vol/$max ($percent%)")
+                }.toString()
+            ))
+        } catch (e: Exception) {
+            Logging.log("VolumeTool", "Error reading volume for $streamName: ${e.message}\n${e.stackTraceToString()}")
+            listOf(UIMessagePart.Text(
+                buildJsonObject { put("success", false); put("error", e.message ?: "Unknown error") }.toString()
+            ))
+        }
+    }
+)
+
+fun createSetVolumeTool(context: Context): Tool = Tool(
+    name = "set_volume",
+    description = "Set the volume for a given audio stream by percentage (0-100). Changing ring/notification requires Do Not Disturb access.",
+    parameters = {
+        InputSchema.Obj(
+            properties = buildJsonObject {
+                putJsonObject("stream") {
+                    put("type", "string")
+                    put("description", "Audio stream name: media, ring, notification, alarm, voice_call, system")
+                    putJsonArray("enum") {
+                        add("media"); add("ring"); add("notification"); add("alarm"); add("voice_call"); add("system")
+                    }
+                }
+                putJsonObject("percent") {
+                    put("type", "integer")
+                    put("description", "Volume percentage (0-100). Will be clamped to valid range.")
+                }
+            },
+            required = listOf("stream", "percent")
+        )
+    },
+    execute = { args ->
+        val params = args.jsonObject
+        val streamName = params["stream"]?.jsonPrimitive?.contentOrNull
+        val percent = params["percent"]?.jsonPrimitive?.intOrNull
+        if (streamName == null || percent == null) {
+            return@Tool listOf(UIMessagePart.Text(
+                buildJsonObject { put("success", false); put("error", "Missing required parameters 'stream' and 'percent'") }.toString()
+            ))
+        }
+        val streamType = STREAM_MAP[streamName]
+        if (streamType == null) {
+            return@Tool listOf(UIMessagePart.Text(
+                buildJsonObject { put("success", false); put("error", "unknown stream: $streamName") }.toString()
+            ))
+        }
+        try {
+            val am = context.getSystemService(AudioManager::class.java)
+            if (am == null) {
+                Logging.log("VolumeTool", "AudioManager unavailable")
+                return@Tool listOf(UIMessagePart.Text(
+                    buildJsonObject { put("success", false); put("error", "AudioManager unavailable") }.toString()
+                ))
+            }
+            val max = am.getStreamMaxVolume(streamType)
+            val clampedPercent = percent.coerceIn(0, 100)
+            val targetVol = ((clampedPercent / 100.0) * max).toInt().coerceIn(0, max)
+            am.setStreamVolume(streamType, targetVol, 0)
+            val actualVol = am.getStreamVolume(streamType)
+            val actualPercent = if (max > 0) ((actualVol * 100.0 / max).toInt()) else 0
+            listOf(UIMessagePart.Text(
+                buildJsonObject {
+                    put("success", true)
+                    put("stream", streamName)
+                    put("volume", actualVol)
+                    put("max", max)
+                    put("percent", actualPercent)
+                    put("message", "$streamName volume set to $actualVol/$max ($actualPercent%)")
+                }.toString()
+            ))
+        } catch (e: SecurityException) {
+            Logging.log("VolumeTool", "SecurityException setting $streamName volume: ${e.message}\n${e.stackTraceToString()}")
+            val needsDnd = streamName == "ring" || streamName == "notification"
+            listOf(UIMessagePart.Text(
+                buildJsonObject {
+                    put("success", false)
+                    put("error", "SecurityException: ${e.message}")
+                    if (needsDnd) {
+                        put("needs_permission", "NOTIFICATION_POLICY_ACCESS")
+                        put("hint", "Changing $streamName volume requires Do Not Disturb access. Go to Settings > Do Not Disturb > Allow access for 橘瓣.")
+                    }
+                }.toString()
+            ))
+        } catch (e: Exception) {
+            Logging.log("VolumeTool", "Error setting volume for $streamName: ${e.message}\n${e.stackTraceToString()}")
+            listOf(UIMessagePart.Text(
+                buildJsonObject { put("success", false); put("error", e.message ?: "Unknown error") }.toString()
+            ))
+        }
+    }
+)
+
+fun hasNotificationPolicyAccess(context: Context): Boolean {
+    return try {
+        val nm = context.getSystemService(NotificationManager::class.java)
+        nm?.isNotificationPolicyAccessGranted == true
+    } catch (e: Exception) {
+        Logging.log("VolumeTool", "Error checking notification policy access: ${e.message}")
+        false
+    }
+}

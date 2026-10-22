@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFlags="flagDefault"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canPerformGestures="true"
+    android:canRetrieveWindowContent="true"
+    android:canTakeScreenshot="true"
+    android:notificationTimeout="100"
+    android:summary="允许橘瓣执行屏幕自动化（点击、滑动、读取界面元素、截图）。仅在助手开启「屏幕自动化」工具时生效。" />

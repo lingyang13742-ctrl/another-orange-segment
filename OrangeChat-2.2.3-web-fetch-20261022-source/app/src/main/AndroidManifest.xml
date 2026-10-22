@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+    tools:ignore="QueryAllPackagesPermission" />
+  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    tools:ignore="ProtectedPermissions" />
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+  <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+  <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    tools:ignore="ScopedStorage" />
+  <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+  <uses-permission android:name="android.permission.READ_SMS" />
+  <uses-permission android:name="android.permission.READ_CALENDAR" />
+  <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+  <uses-permission android:name="android.permission.WRITE_SETTINGS"
+    tools:ignore="ProtectedPermissions" />
+  <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
+  <uses-feature
+    android:name="android.hardware.camera"
+    android:required="false" />
+  <uses-feature
+    android:name="android.hardware.camera.autofocus"
+    android:required="false" />
+
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.TTS_SERVICE" />
+    </intent>
+    <intent>
+      <action android:name="android.intent.action.SET_ALARM" />
+    </intent>
+    <intent>
+      <action android:name="android.intent.action.SHOW_ALARMS" />
+    </intent>
+    <intent>
+      <action android:name="android.intent.action.DISMISS_ALARM" />
+    </intent>
+  </queries>
+
+  <application
+    android:name=".RikkaHubApp"
+    android:largeHeap="true"
+    android:allowBackup="true"
+    android:appCategory="productivity"
+    android:dataExtractionRules="@xml/data_extraction_rules"
+    android:enableOnBackInvokedCallback="true"
+    android:fullBackupContent="@xml/backup_rules"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:supportsRtl="true"
+    android:theme="@style/Theme.Rikkahub"
+    android:usesCleartextTraffic="true"
+    tools:targetApi="33">
+    <activity
+      android:name=".ui.activity.SafeModeActivity"
+      android:exported="false"
+      android:label="@string/title_activity_safe_mode"
+      android:theme="@style/Theme.Rikkahub" />
+    <activity
+      android:name=".ui.activity.AppLockUnlockActivity"
+      android:exported="false"
+      android:excludeFromRecents="true"
+      android:launchMode="singleTask"
+      android:showWhenLocked="true"
+      android:turnScreenOn="true"
+      android:theme="@style/Theme.Rikkahub" />
+    <activity
+      android:name=".ui.activity.AppLockAccessibilityPromptActivity"
+      android:exported="false"
+      android:excludeFromRecents="true"
+      android:launchMode="singleTask"
+      android:showWhenLocked="true"
+      android:turnScreenOn="true"
+      android:theme="@style/Theme.Rikkahub" />
+    <activity
+      android:name=".RouteActivity"
+      android:configChanges="keyboardHidden|orientation|screenSize"
+      android:exported="true"
+      android:importantForAutofill="noExcludeDescendants"
+      android:showWhenLocked="true"
+      android:turnScreenOn="true"
+      android:theme="@style/Theme.Rikkahub"
+      android:windowSoftInputMode="adjustResize">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+
+        <data android:mimeType="text/plain" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.PROCESS_TEXT" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+
+        <data android:mimeType="text/plain" />
+      </intent-filter>
+
+      <meta-data
+        android:name="android.app.shortcuts"
+        android:resource="@xml/shortcuts" />
+    </activity>
+    <activity
+      android:name=".ui.activity.ShortcutHandlerActivity"
+      android:exported="true"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+
+        <data
+          android:host="shortcut"
+          android:scheme="rikkahub" />
+      </intent-filter>
+    </activity>
+    <activity
+      android:name=".ui.activity.McpOAuthCallbackActivity"
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="mcp-oauth-callback"
+          android:scheme="rikkahub" />
+      </intent-filter>
+    </activity>
+    <!-- Fingerprint: verify_fingerprint 工具的透明宿主 Activity, 承载系统 BiometricPrompt -->
+    <activity
+      android:name=".ui.activity.BiometricPromptActivity"
+      android:exported="false"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    <activity
+      android:name="com.yalantis.ucrop.UCropActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+    <!-- Shizuku provider for Gadgetbridge data access -->
+    <provider
+      android:name="rikka.shizuku.ShizukuProvider"
+      android:authorities="${applicationId}.shizuku"
+      android:enabled="true"
+      android:exported="true"
+      android:multiprocess="false" />
+
+    <service
+      android:name=".service.WebServerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="local web server for LLM chat UI" />
+    </service>
+
+    <!-- Notification Listener Service for system tools -->
+    <service
+      android:name=".data.service.RikkaNotificationListenerService"
+      android:exported="true"
+      android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+      </intent-filter>
+    </service>
+
+    <!-- Proactive Message Receiver (handles both proactive alarm and boot completed) -->
+    <receiver
+      android:name=".data.service.ProactiveMessageReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="me.rerere.orangechat.PROACTIVE_MESSAGE" />
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+
+
+    <!-- Proactive Message Trigger Service -->
+    <service
+      android:name=".data.service.ProactiveMessageTriggerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="proactive message scheduling" />
+    </service>
+
+    <!-- Floating Bubble Service (主动消息悬浮球提醒) -->
+    <service
+      android:name=".data.service.FloatingBubbleService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="floating bubble notification" />
+    </service>
+
+    <!-- Supabase Sync Service -->
+    <service
+      android:name=".data.service.SupabaseSyncService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="supabase data sync" />
+    </service>
+
+    <!-- Device Event Tracking Service (realtime screen on/off + boot push to Supabase) -->
+    <service
+      android:name=".data.service.DeviceEventTrackingService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="device boot/screen event tracking for supabase sync" />
+    </service>
+
+    <!-- Device Event AI Trigger Service (aggressive mode: triggers AI thinking on app switch/screen on-off) -->
+    <service
+      android:name=".data.service.DeviceEventAiTriggerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="device event ai trigger for proactive messaging" />
+    </service>
+
+    <!-- Supabase Sync Receiver -->
+    <receiver
+      android:name=".data.service.SupabaseSyncReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="me.rerere.orangechat.SUPABASE_SYNC" />
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Daily Cron Receiver (handles daily_cron alarm and boot completed) -->
+    <receiver
+      android:name=".data.service.DailySummaryReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="me.rerere.orangechat.DAILY_CRON" />
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Daily Cron Trigger Service -->
+    <service
+      android:name=".data.service.DailySummaryTriggerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="daily cron execution for plugin hooks" />
+    </service>
+
+    <!-- Workflow: boot-completed trigger receiver -->
+    <receiver
+      android:name=".workflow.trigger.WorkflowBootReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Workflow: geofence transition receiver (driven by Play Services PendingIntent) -->
+    <receiver
+      android:name=".workflow.trigger.GeofenceTriggerReceiver"
+      android:exported="false" />
+
+    <!-- Screen automation: accessibility service for tap/swipe/read window tree/screenshot -->
+    <service
+      android:name=".service.RikkaAccessibilityService"
+      android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+      android:exported="true"
+      android:label="@string/app_name">
+      <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+      </intent-filter>
+      <meta-data
+        android:name="android.accessibilityservice"
+        android:resource="@xml/accessibility_service_config" />
+    </service>
+
+    <!-- Pomodoro Timer Service -->
+    <service
+      android:name=".plugin.webview.PomodoroTimerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="pomodoro timer countdown notification" />
+    </service>
+
+    <!-- Music Player Service -->
+    <service
+      android:name=".plugin.webview.MusicPlayerService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="background music playback" />
+    </service>
+
+    <!-- KeepAlive Service -->
+    <service
+      android:name=".service.KeepAliveService"
+      android:enabled="true"
+      android:exported="false"
+      android:foregroundServiceType="dataSync"
+      android:stopWithTask="false" />
+
+    <!-- 微信 Bot (iLink 协议): 长轮询收微信消息, 转给关联助手处理, 回复发回微信 -->
+    <service
+      android:name=".service.WeixinBotService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="weixin bot message polling" />
+    </service>
+
+    <!-- QQ Bot (API v2): WebSocket 网关收 QQ 私聊消息, 转给当前助手处理, 回复发回 QQ -->
+    <service
+      android:name=".service.QqBotService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="qq bot websocket message polling" />
+    </service>
+
+    <!-- Voice Call Background Service -->
+    <service
+      android:name=".service.VoiceCallService"
+      android:exported="false"
+      android:foregroundServiceType="microphone" />
+
+    <!-- KeepAlive Restart Receiver（提升国产 ROM 存活率） -->
+    <receiver
+      android:name=".service.KeepAliveRestartReceiver"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="me.rerere.orangechat.RESTART_KEEP_ALIVE" />
+      </intent-filter>
+    </receiver>
+
+    <provider
+      android:name="androidx.core.content.FileProvider"
+      android:authorities="${applicationId}.fileprovider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+    </provider>
+
+    <!-- Exposes workspace files area to SAF (Files app / document pickers) -->
+    <provider
+      android:name=".data.provider.WorkspaceDocumentsProvider"
+      android:authorities="${applicationId}.workspace.documents"
+      android:exported="true"
+      android:grantUriPermissions="true"
+      android:permission="android.permission.MANAGE_DOCUMENTS">
+      <intent-filter>
+        <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+      </intent-filter>
+    </provider>
+    <provider
+      android:name="androidx.startup.InitializationProvider"
+      android:authorities="${applicationId}.androidx-startup"
+      android:exported="false"
+      tools:node="merge">
+      <meta-data
+        android:name="androidx.work.WorkManagerInitializer"
+        android:value="androidx.startup"
+        tools:node="remove" />
+    </provider>
+  </application>
+
+</manifest>

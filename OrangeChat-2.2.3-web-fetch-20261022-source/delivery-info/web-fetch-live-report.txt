@@ -1,0 +1,39 @@
+OrangeChat 网页抓取实测报告
+日期：2026-10-22（Asia/Shanghai）
+设备：Android 模拟器 RedPlus_Offline_API37，arm64，API 37
+测试版本：当前本地 feat/direct-web-fetch 分支工作区
+
+结果：通过
+
+1. 生产代码直接联网抓取（桌面 JVM）
+- https://example.com/：200，Example Domain，156 字符
+- https://github.com/sue1231513/orangechat：200，标题包含 OrangeChat/橘瓣，8538 字符
+- https://raw.githubusercontent.com/sue1231513/orangechat/master/README_ZH_CN.md：200，5012 字符，中文正常
+- https://jsoup.org/apidocs/org/jsoup/Jsoup.html：200，重定向到无 .html 地址，17758 字符
+- https://www.runoob.com/html/html-tutorial.html：200，HTML 教程 | 菜鸟教程，6575 字符，中文正常
+- http://example.com/：200，156 字符
+- https://httpbin.org/status/404：明确返回 HTTP 404 错误
+以上请求 max_length=1500，长正文均返回截断标志；完整日志见 web-fetch-live.log。
+
+2. Android 应用实机环境测试（模拟器）
+- 使用应用 Koin 中实际注册的 LocalTools.webFetchTool；未选中工具时不注册，选中后注册 web_fetch。
+- 在设备上成功读取 example.com、GitHub 仓库、中文 README、菜鸟教程。
+- file:///etc/passwd 被拒绝；HTTP 404 返回 success=false 和错误消息。
+- 向 ChatService 发送“请直接打开 https://example.com/ 并总结网页，不要搜索。”。
+- 设置 enableWebSearch=false，助手仅启用 WebFetch。
+- 本地 OpenAI 协议测试服务触发一次 web_fetch；应用执行实际 HTTPS 抓取并在第二次请求中回传真实标题/正文。
+- 请求记录中工具包含 web_fetch，不含 search_web；最终会话含已执行的 web_fetch 工具记录。
+- 模拟器仪器测试通过：OK (1 test)。
+限制：模型响应由本地协议测试服务生成。验证了真实网页访问、工具执行和聊天回传链路，未验证真实大模型的工具选择行为。
+
+3. 手动界面验证
+- 智能体 → 本地工具：可看到“网页抓取”及说明。
+- 开关先关闭后开启，界面状态正确；已确认 Android DataStore 文件保存 web_fetch 设置。
+- 会话页显示抓取调用和结果；点击调用可查看标题、网址和完整返回正文。
+截图：web-fetch-chat.png、web-fetch-preview.png、web-fetch-setting.png。
+
+4. 构建
+- :app:assembleDebug 通过，生成 arm64-v8a/x86_64/universal 调试 APK。
+- 为本次打包生成本地测试签名 app/debug.keystore（已被 Git 忽略，不包含发布签名）。
+- 临时使用本机 JDK 21，仓库原 JDK 配置已恢复。
+- 本次测试脚本及模型协议服务保存在 _chk 中，不计入功能补丁。

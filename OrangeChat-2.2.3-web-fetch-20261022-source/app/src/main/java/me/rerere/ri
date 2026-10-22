@@ -1,0 +1,149 @@
+package me.rerere.rikkahub.ui.pages.voice
+
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.geometry.Offset
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import kotlin.math.abs
+import kotlin.math.sin
+
+/**
+ * 动态声波球
+ *
+ * 根据振幅数据产生呼吸/波动动画, 用于语音通话中心视觉元素.
+ */
+@Composable
+fun VoiceOrb(
+    modifier: Modifier = Modifier,
+    amplitudes: List<Float> = emptyList(),
+    status: VoiceCallStatus = VoiceCallStatus.Idle,
+    baseColor: Color = Color(0xFF4CAF50),
+    accentColor: Color = Color(0xFF81C784),
+    size: Dp = 200.dp,
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "voice_orb")
+
+    val breathe by infiniteTransition.animateFloat(
+        initialValue = 0.85f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "breathe"
+    )
+
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(8000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
+
+    val currentAmplitude = if (amplitudes.isNotEmpty()) {
+        amplitudes.takeLast(8).average().toFloat()
+    } else {
+        0f
+    }
+
+    val intensity = when (status) {
+        VoiceCallStatus.Listening -> (currentAmplitude * 0.5f + 0.1f).coerceIn(0.1f, 0.6f)
+        VoiceCallStatus.Speaking -> 0.4f
+        VoiceCallStatus.Processing -> 0.15f
+        VoiceCallStatus.Error -> 0.1f
+        VoiceCallStatus.Idle -> 0.05f
+    }
+
+    val scale = breathe + intensity * 0.3f
+
+    Canvas(
+        modifier = modifier.size(size)
+    ) {
+        val canvasSize = this.size.minDimension
+        val center = Offset(canvasSize / 2, canvasSize / 2)
+        val baseRadius = canvasSize / 2 * 0.6f
+
+        // 外层光晕
+        for (i in 3 downTo 1) {
+            val layerRadius = baseRadius * scale * (1f + i * 0.15f)
+            val alpha = (0.08f / i) * (1f + intensity)
+            drawCircle(
+                color = accentColor.copy(alpha = alpha.coerceAtMost(0.3f)),
+                radius = layerRadius,
+                center = center
+            )
+        }
+
+        // 主球体渐变
+        val mainRadius = baseRadius * scale
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    accentColor.copy(alpha = 0.9f),
+                    baseColor.copy(alpha = 0.7f),
+                    baseColor.copy(alpha = 0.3f)
+                ),
+                center = center,
+                radius = mainRadius
+            ),
+            radius = mainRadius,
+            center = center
+        )
+
+        // 声波环
+        if (intensity > 0.15f) {
+            val ringCount = 3
+            for (i in 0 until ringCount) {
+                val phase = (rotation / 360f + i.toFloat() / ringCount) % 1f
+                val ringRadius = baseRadius * (1.1f + phase * 0.6f)
+                val ringAlpha = (1f - phase) * 0.4f * intensity
+                drawCircle(
+                    color = accentColor.copy(alpha = ringAlpha),
+                    radius = ringRadius,
+                    center = center,
+                    style = Stroke(width = 3f)
+                )
+            }
+        }
+
+        // 内部波形线
+        if (status == VoiceCallStatus.Listening || status == VoiceCallStatus.Speaking) {
+            val waveCount = 5
+            val waveColor = Color.White.copy(alpha = 0.6f)
+            for (i in 0 until waveCount) {
+                val y = center.y + (i - waveCount / 2f) * 8f
+                val amplitude = mainRadius * 0.15f * (1f - abs(i - waveCount / 2f) / waveCount)
+                val path = Path()
+                path.moveTo(center.x - mainRadius * 0.6f, y)
+                val segments = 20
+                for (j in 1..segments) {
+                    val x = center.x - mainRadius * 0.6f + (mainRadius * 1.2f * j / segments)
+                    val wave = sin(j * 0.5f + rotation * 0.05f + i) * amplitude * (0.5f + intensity)
+                    path.lineTo(x, y + wave)
+                }
+                drawPath(
+                    path = path,
+                    color = waveColor,
+                    style = Stroke(width = 2f)
+                )
+            }
+        }
+    }
+}

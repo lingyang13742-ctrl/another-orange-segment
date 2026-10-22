@@ -1,0 +1,93 @@
+﻿/*
+ * 橘瓣 OrangeChat
+ * 衍生自 RikkaHub (https://github.com/rikkahub/rikkahub)，原作者 RE
+ * 本项目基于 GNU AGPL v3 开源，详见根目录 LICENSE 文件
+ */
+
+package me.rerere.rikkahub.di
+
+import me.rerere.rikkahub.ui.pages.assistant.AssistantVM
+import me.rerere.rikkahub.ui.pages.assistant.detail.AssistantDetailVM
+import me.rerere.rikkahub.ui.pages.backup.BackupVM
+import me.rerere.rikkahub.ui.pages.chat.ChatDrawerVM
+import me.rerere.rikkahub.ui.pages.chat.ChatVM
+import me.rerere.rikkahub.ui.pages.debug.DebugVM
+import me.rerere.rikkahub.ui.pages.developer.DeveloperVM
+import me.rerere.rikkahub.ui.pages.favorite.FavoriteVM
+import me.rerere.rikkahub.ui.pages.health.HealthVM
+import me.rerere.rikkahub.ui.pages.memory.MemoryBankVM
+import me.rerere.rikkahub.ui.pages.miniapp.MiniAppViewModel
+import me.rerere.rikkahub.ui.pages.search.SearchVM
+import me.rerere.rikkahub.ui.pages.history.HistoryVM
+import me.rerere.rikkahub.ui.pages.stats.StatsVM
+import me.rerere.rikkahub.ui.pages.imggen.ImgGenVM
+import me.rerere.rikkahub.ui.pages.extensions.PromptVM
+import me.rerere.rikkahub.ui.pages.extensions.ExternalMemoriesVM
+import me.rerere.rikkahub.ui.pages.extensions.QuickMessagesVM
+import me.rerere.rikkahub.ui.pages.extensions.SkillDetailVM
+import me.rerere.rikkahub.ui.pages.extensions.SkillsVM
+import me.rerere.rikkahub.ui.pages.extensions.workspace.WorkspaceDetailVM
+import me.rerere.rikkahub.ui.pages.extensions.workspace.WorkspaceVM
+import me.rerere.rikkahub.ui.pages.security.SecurityAuditVM
+import me.rerere.rikkahub.ui.pages.setting.SettingVM
+import me.rerere.rikkahub.ui.pages.share.handler.ShareHandlerVM
+import me.rerere.rikkahub.ui.pages.translator.TranslatorVM
+import me.rerere.rikkahub.workflow.ui.WorkflowsViewModel
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+val viewModelModule = module {
+    viewModel<ChatVM> { params ->
+        ChatVM(
+            id = params.get(),
+            context = get(),
+            settingsStore = get(),
+            conversationRepo = get(),
+            chatService = get(),
+            updateChecker = get(),
+            filesManager = get(),
+            favoriteRepository = get(),
+        )
+    }
+    viewModelOf(::ChatDrawerVM)
+    viewModelOf(::SettingVM)
+    viewModelOf(::DebugVM)
+    viewModelOf(::HistoryVM)
+    viewModelOf(::AssistantVM)
+    viewModel<AssistantDetailVM> {
+        AssistantDetailVM(
+            id = it.get(),
+            settingsStore = get(),
+            memoryRepository = get(),
+            filesManager = get(),
+            skillManager = get(),
+            workspaceRepository = get(),
+        )
+    }
+    viewModelOf(::TranslatorVM)
+    viewModel<ShareHandlerVM> {
+        ShareHandlerVM(
+            text = it.get(),
+            settingsStore = get(),
+        )
+    }
+    viewModelOf(::BackupVM)
+    viewModelOf(::ImgGenVM)
+    viewModelOf(::DeveloperVM)
+    viewModelOf(::PromptVM)
+    viewModelOf(::QuickMessagesVM)
+    viewModelOf(::ExternalMemoriesVM)
+    viewModelOf(::SkillsVM)
+    viewModelOf(::SkillDetailVM)
+    viewModelOf(::WorkspaceVM)
+    viewModel<WorkspaceDetailVM> { WorkspaceDetailVM(id = it.get(), repository = get()) }
+    viewModelOf(::FavoriteVM)
+    viewModelOf(::SearchVM)
+    viewModelOf(::StatsVM)
+    viewModelOf(::HealthVM)
+    viewModelOf(::MemoryBankVM)
+    viewModelOf(::MiniAppViewModel)
+    viewModelOf(::WorkflowsViewModel)
+    viewModelOf(::SecurityAuditVM)
+}
